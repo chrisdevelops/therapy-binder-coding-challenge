@@ -1,8 +1,11 @@
 import { Box } from '@mui/material';
-import { Header } from './components/Layout/Header';
-import { ViewRenderer } from './components/ViewRenderer';
+import { Header } from './Header';
 
-function App() {
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+export function MainLayout({ children }: MainLayoutProps) {
   return (
     <Box
       sx={{
@@ -27,10 +30,9 @@ function App() {
           boxSizing: 'border-box',
         }}
       >
-        <ViewRenderer />
+        {children}
       </Box>
     </Box>
   );
 }
 
-export default App;

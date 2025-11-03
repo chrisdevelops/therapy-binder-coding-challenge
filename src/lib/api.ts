@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import { THERAPIST_ID } from './constants';
-import type { SessionNote, NewSessionNoteInput } from './types';
+import type { SessionNote, NewSessionNoteInput, CreateSessionNoteInput, UpdateSessionNoteInput } from './types';
 
 export async function getSessionNotes(): Promise<SessionNote[]> {
   const { data, error } = await supabase
@@ -12,12 +12,16 @@ export async function getSessionNotes(): Promise<SessionNote[]> {
     throw new Error(`Failed to fetch session notes: ${error.message}`);
   }
 
-  return data || [];
+  return (data as SessionNote[]) || [];
 }
 
 export async function createSessionNote(
-  input: Omit<NewSessionNoteInput, 'therapist_id'>
+  input: CreateSessionNoteInput
 ): Promise<SessionNote> {
+  if (!THERAPIST_ID) {
+    throw new Error('THERAPIST_ID is not configured. Please check your environment variables.');
+  }
+
   const payload: NewSessionNoteInput = {
     therapist_id: THERAPIST_ID,
     client_name: input.client_name,
@@ -41,7 +45,7 @@ export async function createSessionNote(
 
 export async function updateSessionNote(
   id: string,
-  input: Omit<NewSessionNoteInput, 'therapist_id'>
+  input: UpdateSessionNoteInput
 ): Promise<SessionNote> {
   const payload: Partial<NewSessionNoteInput> = {
     client_name: input.client_name,
